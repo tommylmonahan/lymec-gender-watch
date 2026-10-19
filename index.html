@@ -102,7 +102,7 @@
             <span class="key-hint" aria-hidden="true">W</span>
           </button>
 
-          <button class="record-button record-nonbinary" type="button" data-gender="Non-binary">
+          <button class="record-button record-other" type="button" data-gender="Other">
             <span class="record-icon" aria-hidden="true">
               <svg viewBox="0 0 32 32">
                 <circle cx="16" cy="9" r="5"></circle>
@@ -110,14 +110,14 @@
               </svg>
             </span>
             <span>
-              <strong>Non-binary</strong>
+              <strong>Other</strong>
               <small>Record one speaker</small>
             </span>
-            <span class="key-hint" aria-hidden="true">N</span>
+            <span class="key-hint" aria-hidden="true">O</span>
           </button>
         </div>
 
-        <p class="keyboard-note">Keyboard shortcuts: <kbd>M</kbd> man · <kbd>W</kbd> woman · <kbd>N</kbd> non-binary · <kbd>F</kbd> first-time</p>
+        <p class="keyboard-note">Keyboard shortcuts: <kbd>M</kbd> man · <kbd>W</kbd> woman · <kbd>O</kbd> other · <kbd>F</kbd> first-time</p>
       </section>
 
       <section class="stats-panel" aria-labelledby="stats-heading">
@@ -149,9 +149,9 @@
             <span id="womanFirstTime">0 first-time</span>
           </article>
           <article class="stat-card">
-            <div class="stat-card-label"><span class="dot dot-nonbinary"></span>Non-binary</div>
-            <strong id="nonBinaryCount">0</strong>
-            <span id="nonBinaryFirstTime">0 first-time</span>
+            <div class="stat-card-label"><span class="dot dot-other"></span>Other</div>
+            <strong id="otherCount">0</strong>
+            <span id="otherFirstTime">0 first-time</span>
           </article>
         </div>
 
@@ -159,12 +159,12 @@
           <div class="balance-labels">
             <span><strong id="manPercent">0%</strong> men</span>
             <span><strong id="womanPercent">0%</strong> women</span>
-            <span><strong id="nonBinaryPercent">0%</strong> non-binary</span>
+            <span><strong id="otherPercent">0%</strong> other</span>
           </div>
           <div class="balance-bar" aria-label="Gender balance">
             <span class="balance-man" id="manBar"></span>
             <span class="balance-woman" id="womanBar"></span>
-            <span class="balance-nonbinary" id="nonBinaryBar"></span>
+            <span class="balance-other" id="otherBar"></span>
           </div>
         </div>
       </section>

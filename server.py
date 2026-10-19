@@ -57,7 +57,7 @@ def validate_entries(value: object) -> list[dict[str, object]]:
 
         if not isinstance(entry_id, str) or not entry_id or len(entry_id) > 200:
             raise ValueError(f"Entry {index} has an invalid ID.")
-        if gender not in {"Man", "Woman", "Non-binary"}:
+        if gender not in {"Man", "Woman", "Other"}:
             raise ValueError(f"Entry {index} has an invalid gender.")
         if not isinstance(first_time, bool):
             raise ValueError(f"Entry {index} has an invalid first-time value.")

@@ -13,7 +13,7 @@ Keep the console window open while using the tracker. Close it, or press `Ctrl+C
 
 ## Features
 
-- One-click entries for men, women, and non-binary delegates
+- One-click entries for men, women, and other delegates
 - Optional first-time delegate marker
 - Optional per-record comment
 - Live totals, first-time totals, and gender balance
@@ -23,7 +23,7 @@ Keep the console window open while using the tracker. Close it, or press `Ctrl+C
 - Live Excel-compatible CSV backup
 - JSON recovery copy and archived sessions
 - Light and dark themes
-- Keyboard shortcuts: `M`, `W`, `N`, and `F`
+- Keyboard shortcuts: `M`, `W`, `O`, and `F`
 
 ## Data and privacy
 

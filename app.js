@@ -1,4 +1,4 @@
-const STORAGE_KEY = "lymec-gender-watch-v1";
+const STORAGE_KEY = "lymec-gender-watch-v2";
 const THEME_KEY = "lymec-gender-watch-theme";
 const MAX_VISIBLE_ENTRIES = 8;
 
@@ -12,14 +12,14 @@ const elements = {
   manFirstTime: document.querySelector("#manFirstTime"),
   womanCount: document.querySelector("#womanCount"),
   womanFirstTime: document.querySelector("#womanFirstTime"),
-  nonBinaryCount: document.querySelector("#nonBinaryCount"),
-  nonBinaryFirstTime: document.querySelector("#nonBinaryFirstTime"),
+  otherCount: document.querySelector("#otherCount"),
+  otherFirstTime: document.querySelector("#otherFirstTime"),
   manPercent: document.querySelector("#manPercent"),
   womanPercent: document.querySelector("#womanPercent"),
-  nonBinaryPercent: document.querySelector("#nonBinaryPercent"),
+  otherPercent: document.querySelector("#otherPercent"),
   manBar: document.querySelector("#manBar"),
   womanBar: document.querySelector("#womanBar"),
-  nonBinaryBar: document.querySelector("#nonBinaryBar"),
+  otherBar: document.querySelector("#otherBar"),
   historyList: document.querySelector("#historyList"),
   emptyState: document.querySelector("#emptyState"),
   undoButton: document.querySelector("#undoButton"),
@@ -46,7 +46,7 @@ function loadEntries() {
       .filter(
         (entry) =>
           entry &&
-          (entry.gender === "Man" || entry.gender === "Woman" || entry.gender === "Non-binary") &&
+          (entry.gender === "Man" || entry.gender === "Woman" || entry.gender === "Other") &&
           typeof entry.firstTime === "boolean" &&
           typeof entry.timestamp === "string" &&
           (entry.comment === undefined || typeof entry.comment === "string"),
@@ -165,13 +165,13 @@ function render() {
   const total = entries.length;
   const men = count("Man");
   const women = count("Woman");
-  const nonBinary = count("Non-binary");
+  const other = count("Other");
   const firstTimers = entries.filter((entry) => entry.firstTime).length;
   const menFirstTime = count("Man", true);
   const womenFirstTime = count("Woman", true);
-  const nonBinaryFirstTime = count("Non-binary", true);
-  const [menShare, womenShare, nonBinaryShare] = calculatePercentages(
-    [men, women, nonBinary],
+  const otherFirstTime = count("Other", true);
+  const [menShare, womenShare, otherShare] = calculatePercentages(
+    [men, women, other],
     total,
   );
 
@@ -182,14 +182,14 @@ function render() {
   elements.manFirstTime.textContent = `${menFirstTime} first-time`;
   elements.womanCount.textContent = women;
   elements.womanFirstTime.textContent = `${womenFirstTime} first-time`;
-  elements.nonBinaryCount.textContent = nonBinary;
-  elements.nonBinaryFirstTime.textContent = `${nonBinaryFirstTime} first-time`;
+  elements.otherCount.textContent = other;
+  elements.otherFirstTime.textContent = `${otherFirstTime} first-time`;
   elements.manPercent.textContent = `${menShare}%`;
   elements.womanPercent.textContent = `${womenShare}%`;
-  elements.nonBinaryPercent.textContent = `${nonBinaryShare}%`;
+  elements.otherPercent.textContent = `${otherShare}%`;
   elements.manBar.style.width = `${menShare}%`;
   elements.womanBar.style.width = `${womenShare}%`;
-  elements.nonBinaryBar.style.width = `${nonBinaryShare}%`;
+  elements.otherBar.style.width = `${otherShare}%`;
 
   const hasEntries = total > 0;
   elements.undoButton.disabled = !hasEntries;
@@ -353,7 +353,7 @@ document.addEventListener("keydown", (event) => {
 
   if (event.key.toLowerCase() === "m") recordEntry("Man");
   if (event.key.toLowerCase() === "w") recordEntry("Woman");
-  if (event.key.toLowerCase() === "n") recordEntry("Non-binary");
+  if (event.key.toLowerCase() === "o") recordEntry("Other");
   if (event.key.toLowerCase() === "f") {
     elements.firstTime.checked = !elements.firstTime.checked;
     showToast(`First-time ${elements.firstTime.checked ? "on" : "off"}`);

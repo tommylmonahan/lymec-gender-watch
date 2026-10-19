@@ -416,7 +416,7 @@ input:focus-visible + .custom-checkbox {
   border-color: color-mix(in srgb, var(--coral-bright) 20%, transparent);
 }
 
-.record-nonbinary {
+.record-other {
   background: var(--purple-soft);
   color: var(--purple);
   border-color: color-mix(in srgb, var(--purple-bright) 22%, transparent);
@@ -568,7 +568,7 @@ button:disabled {
   background: var(--coral-bright);
 }
 
-.dot-nonbinary {
+.dot-other {
   background: var(--purple-bright);
 }
 
@@ -609,7 +609,7 @@ button:disabled {
   background: var(--coral-bright);
 }
 
-.balance-nonbinary {
+.balance-other {
   background: var(--purple-bright);
 }
 
