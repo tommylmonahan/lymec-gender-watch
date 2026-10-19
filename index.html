@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#2ca9fc" />
+    <link rel="icon" href="assets/lymec-logo.webp" type="image/webp" />
     <meta
       name="description"
       content="A local, privacy-friendly floor participation tracker for LYMEC Congress."
@@ -14,21 +15,13 @@
   <body>
     <main class="app-shell">
       <header class="topbar">
-        <div class="brand-lockup" aria-label="LYMEC Gender Watch">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 46 46">
-              <path class="wave wave-pink" d="M8 18c5.5 0 5.5-7 11-7s5.5 7 11 7 5.5-7 11-7"></path>
-              <path class="wave wave-blue" d="M8 28c5.5 0 5.5-7 11-7s5.5 7 11 7 5.5-7 11-7"></path>
-            </svg>
-          </span>
-          <span class="brand-copy">
-            <strong>LYMEC</strong>
-            <span>Gender Watch</span>
-          </span>
+        <div class="brand-lockup">
+          <img class="official-logo" src="assets/lymec-logo.webp" alt="LYMEC — European Liberal Youth" />
+          <span class="tool-name">Gender Watch</span>
         </div>
         <div class="congress-label">
           <p class="eyebrow">European Liberal Youth</p>
-          <h1>Congress floor tracker</h1>
+          <h1>Congress Floor Tracker</h1>
         </div>
         <button class="icon-button" id="themeButton" type="button" aria-label="Use dark theme" title="Change theme">
           <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true">
@@ -160,7 +153,10 @@
       </section>
 
       <footer>
-        <p>Saved automatically on this device</p>
+        <p class="save-status" id="backupStatus" data-state="connecting" role="status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="backupStatusText">Connecting to local backup...</span>
+        </p>
         <button class="danger-button" id="resetButton" type="button" disabled>Reset session</button>
       </footer>
     </main>

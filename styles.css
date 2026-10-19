@@ -88,52 +88,26 @@ input:focus-visible + .custom-checkbox {
 .brand-lockup {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: var(--surface);
-  box-shadow: 0 6px 18px rgba(44, 169, 252, 0.18);
+.official-logo {
+  display: block;
+  width: 88px;
+  height: 55px;
+  object-fit: contain;
 }
 
-.brand-mark svg {
-  width: 40px;
-  fill: none;
-  stroke-linecap: round;
-  stroke-width: 5;
-}
-
-.wave-pink {
-  stroke: var(--coral-bright);
-}
-
-.wave-blue {
-  stroke: var(--blue-bright);
-}
-
-.brand-copy {
-  display: flex;
-  flex-direction: column;
-  line-height: 1;
-}
-
-.brand-copy strong {
-  font-size: 1.22rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-}
-
-.brand-copy > span {
-  margin-top: 4px;
+.tool-name {
+  padding: 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--coral-bright) 24%, var(--line));
+  border-radius: 7px;
+  background: var(--coral-soft);
   color: var(--coral);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
@@ -651,6 +625,46 @@ footer p {
   font-size: 0.74rem;
 }
 
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.status-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--muted) 12%, transparent);
+}
+
+.save-status[data-state="saved"] .status-dot {
+  background: #25a267;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #25a267 15%, transparent);
+}
+
+.save-status[data-state="saving"] .status-dot,
+.save-status[data-state="connecting"] .status-dot {
+  background: var(--blue-bright);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-bright) 15%, transparent);
+  animation: status-pulse 1.2s ease-in-out infinite;
+}
+
+.save-status[data-state="error"] {
+  color: var(--danger);
+}
+
+.save-status[data-state="error"] .status-dot {
+  background: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 15%, transparent);
+}
+
+@keyframes status-pulse {
+  50% { opacity: 0.45; }
+}
+
 .danger-button,
 .secondary-button,
 .confirm-reset-button {
@@ -766,7 +780,7 @@ dialog p {
     display: none;
   }
 
-  .brand-copy > span {
+  .tool-name {
     font-size: 0.62rem;
   }
 

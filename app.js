@@ -24,10 +24,14 @@ const elements = {
   confirmResetButton: document.querySelector("#confirmResetButton"),
   themeButton: document.querySelector("#themeButton"),
   toast: document.querySelector("#toast"),
+  backupStatus: document.querySelector("#backupStatus"),
+  backupStatusText: document.querySelector("#backupStatusText"),
 };
 
 let entries = loadEntries();
 let toastTimer;
+let serverAvailable = false;
+let backupQueue = Promise.resolve();
 
 function loadEntries() {
   try {
@@ -46,7 +50,75 @@ function loadEntries() {
 }
 
 function saveEntries() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  } catch (error) {
+    console.error("Browser storage failed:", error);
+    setBackupStatus("error", "Browser copy failed - disk backup may still be safe");
+  }
+}
+
+function setBackupStatus(state, message) {
+  elements.backupStatus.dataset.state = state;
+  elements.backupStatusText.textContent = message;
+}
+
+async function initializeBackup() {
+  if (location.protocol !== "http:" && location.protocol !== "https:") {
+    setBackupStatus("error", "Browser-only mode - use start.bat for Excel backup");
+    return;
+  }
+
+  setBackupStatus("connecting", "Connecting to local backup...");
+  try {
+    const response = await fetch("/api/records", { cache: "no-store" });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || "Could not read the local backup.");
+
+    serverAvailable = true;
+    if (payload.initialized) {
+      if (entries.length > payload.entries.length) {
+        await syncBackup("restore");
+      } else {
+        entries = payload.entries;
+        saveEntries();
+        render();
+        setBackupStatus("saved", "Excel backup active - all records saved");
+      }
+    } else if (entries.length > 0) {
+      await syncBackup("restore");
+    } else {
+      setBackupStatus("saved", "Excel backup active - ready to record");
+    }
+  } catch (error) {
+    console.error("Backup connection failed:", error);
+    setBackupStatus("error", "Disk backup unavailable - browser copy is active");
+  }
+}
+
+function syncBackup(action = "update") {
+  if (!serverAvailable) return Promise.resolve();
+
+  const snapshot = entries.map((entry) => ({ ...entry }));
+  backupQueue = backupQueue
+    .catch(() => undefined)
+    .then(async () => {
+      setBackupStatus("saving", "Updating Excel backup...");
+      const response = await fetch("/api/records", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entries: snapshot, action }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "The disk backup could not be updated.");
+      setBackupStatus("saved", "Excel backup active - all records saved");
+    })
+    .catch((error) => {
+      console.error("Backup write failed:", error);
+      setBackupStatus("error", error.message || "Backup failed - browser copy is safe");
+    });
+
+  return backupQueue;
 }
 
 function count(gender, firstTimeOnly = false) {
@@ -138,6 +210,7 @@ function recordEntry(gender) {
   });
   saveEntries();
   render();
+  syncBackup("record");
   showToast(`${gender}${isFirstTime ? " · first-time delegate" : ""} recorded`);
 }
 
@@ -146,6 +219,7 @@ function undoLast() {
   if (!removed) return;
   saveEntries();
   render();
+  syncBackup("undo");
   showToast(`Last ${removed.gender.toLowerCase()} entry removed`);
 }
 
@@ -154,7 +228,8 @@ function resetSession() {
   elements.firstTime.checked = false;
   saveEntries();
   render();
-  showToast("Session reset");
+  syncBackup("reset");
+  showToast("Session reset and previous data archived");
 }
 
 function exportCsv() {
@@ -237,3 +312,4 @@ document.addEventListener("keydown", (event) => {
 
 initializeTheme();
 render();
+initializeBackup();
