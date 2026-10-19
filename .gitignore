@@ -3,4 +3,5 @@ Thumbs.db
 *.log
 __pycache__/
 data/records.json
+data/current-session.csv
 data/archive/

@@ -18,9 +18,10 @@ Keep the console window open while using the tracker. Close it, or press `Ctrl+C
 - Optional per-record comment
 - Live totals, first-time totals, and gender balance
 - Recent-entry log and one-click undo
-- JSON export
+- CSV export
 - Automatic browser and disk saving
-- Live JSON backup and archived sessions
+- Live Excel-compatible CSV backup
+- JSON recovery copy and archived sessions
 - Light and dark themes
 - Keyboard shortcuts: `M`, `W`, `O`, and `F`
 
@@ -28,13 +29,15 @@ Keep the console window open while using the tracker. Close it, or press `Ctrl+C
 
 Every change is stored in both the browser and these local files:
 
-- `data/records.json` - the live backup and recovery source used when the app starts
-- `data/archive/` - timestamped JSON copies of sessions that were reset
+- `data/current-session.csv` - the live backup, ready to open in Excel
+- `data/records.json` - the recovery source used when the app starts
+- `data/archive/` - timestamped copies of sessions that were reset
 
 The server listens only on `127.0.0.1`, so it is accessible only from this computer. Nothing is sent over the internet.
 
 ## Notes
 
 - The first-time checkbox and comment field clear after each recorded intervention.
-- Resetting creates a timestamped JSON archive before starting a blank session.
+- Resetting creates timestamped CSV and JSON archives before starting a blank session.
+- Avoid keeping `current-session.csv` open in Excel while recording. Excel may lock the file; if that happens, the app displays a warning and retains the records in the browser and JSON recovery file.
 - Opening `index.html` directly still works, but runs in browser-only mode without the automatic disk backup.

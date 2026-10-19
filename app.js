@@ -76,7 +76,7 @@ function setBackupStatus(state, message) {
 
 async function initializeBackup() {
   if (location.protocol !== "http:" && location.protocol !== "https:") {
-    setBackupStatus("error", "Browser-only mode - use start.bat for JSON backup");
+    setBackupStatus("error", "Browser-only mode - use start.bat for Excel backup");
     return;
   }
 
@@ -94,12 +94,12 @@ async function initializeBackup() {
         entries = payload.entries;
         saveEntries();
         render();
-        setBackupStatus("saved", "JSON backup active - all records saved");
+        setBackupStatus("saved", "Excel backup active - all records saved");
       }
     } else if (entries.length > 0) {
       await syncBackup("restore");
     } else {
-      setBackupStatus("saved", "JSON backup active - ready to record");
+      setBackupStatus("saved", "Excel backup active - ready to record");
     }
   } catch (error) {
     console.error("Backup connection failed:", error);
@@ -114,7 +114,7 @@ function syncBackup(action = "update") {
   backupQueue = backupQueue
     .catch(() => undefined)
     .then(async () => {
-      setBackupStatus("saving", "Updating JSON backup...");
+      setBackupStatus("saving", "Updating Excel backup...");
       const response = await fetch("/api/records", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -122,7 +122,7 @@ function syncBackup(action = "update") {
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "The disk backup could not be updated.");
-      setBackupStatus("saved", "JSON backup active - all records saved");
+      setBackupStatus("saved", "Excel backup active - all records saved");
     })
     .catch((error) => {
       console.error("Backup write failed:", error);
@@ -280,18 +280,37 @@ function resetSession() {
   showToast("Session reset and previous data archived");
 }
 
-function exportJson() {
-  const json = `${JSON.stringify(entries, null, 2)}\n`;
-  const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+function exportCsv() {
+  const header = ["Entry", "Gender", "First-time delegate", "Comment", "Date", "Time"];
+  const rows = entries.map((entry, index) => {
+    const date = new Date(entry.timestamp);
+    return [
+      index + 1,
+      entry.gender,
+      entry.firstTime ? "Yes" : "No",
+      entry.comment || "",
+      date.toLocaleDateString(),
+      date.toLocaleTimeString(),
+    ];
+  });
+  const csv = [header, ...rows]
+    .map((row) => row.map(csvCell).join(","))
+    .join("\r\n");
+  const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
   const link = document.createElement("a");
   const dateLabel = new Date().toISOString().slice(0, 10);
   link.href = URL.createObjectURL(blob);
-  link.download = `lymec-gender-watch-${dateLabel}.json`;
+  link.download = `lymec-gender-watch-${dateLabel}.csv`;
   document.body.append(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(link.href);
-  showToast("JSON exported");
+  showToast("CSV exported");
+}
+
+function csvCell(value) {
+  const text = String(value).replaceAll('"', '""');
+  return `"${text}"`;
 }
 
 function showToast(message) {
@@ -319,7 +338,7 @@ document.querySelectorAll("[data-gender]").forEach((button) => {
 });
 
 elements.undoButton.addEventListener("click", undoLast);
-elements.exportButton.addEventListener("click", exportJson);
+elements.exportButton.addEventListener("click", exportCsv);
 elements.resetButton.addEventListener("click", () => elements.resetDialog.showModal());
 elements.confirmResetButton.addEventListener("click", resetSession);
 elements.themeButton.addEventListener("click", () => {
