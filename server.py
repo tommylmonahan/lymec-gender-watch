@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
-import io
 import json
 import os
 import shutil
@@ -21,7 +19,6 @@ ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 ARCHIVE_DIR = DATA_DIR / "archive"
 RECORDS_FILE = DATA_DIR / "records.json"
-CSV_FILE = DATA_DIR / "current-session.csv"
 HOST = "127.0.0.1"
 PORT = 8765
 MAX_BODY_BYTES = 10 * 1024 * 1024
@@ -104,65 +101,21 @@ def atomic_write(path: Path, content: str) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def csv_content(entries: list[dict[str, object]]) -> str:
-    output = io.StringIO(newline="")
-    writer = csv.writer(output)
-    writer.writerow(
-        [
-            "Entry",
-            "Gender",
-            "First-time delegate",
-            "Comment",
-            "Recorded at",
-            "Date",
-            "Time",
-            "Record ID",
-        ]
-    )
-
-    for index, entry in enumerate(entries, start=1):
-        recorded_at = datetime.fromisoformat(str(entry["timestamp"]).replace("Z", "+00:00"))
-        local_time = recorded_at.astimezone()
-        writer.writerow(
-            [
-                index,
-                entry["gender"],
-                "Yes" if entry["firstTime"] else "No",
-                entry.get("comment", ""),
-                local_time.isoformat(timespec="seconds"),
-                local_time.strftime("%Y-%m-%d"),
-                local_time.strftime("%H:%M:%S"),
-                entry["id"],
-            ]
-        )
-
-    return "\ufeff" + output.getvalue()
-
-
 def write_records(entries: list[dict[str, object]]) -> None:
-    # JSON is the recovery source and is written first. If Excel has the CSV
-    # locked, no record is lost and the CSV can catch up on the next update.
     atomic_write(RECORDS_FILE, json.dumps(entries, ensure_ascii=False, indent=2) + "\n")
-    atomic_write(CSV_FILE, csv_content(entries))
 
 
 def archive_records(entries: list[dict[str, object]]) -> str:
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
     label = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
     json_archive = ARCHIVE_DIR / f"session-{label}.json"
-    csv_archive = ARCHIVE_DIR / f"session-{label}.csv"
 
     if RECORDS_FILE.exists():
         shutil.copy2(RECORDS_FILE, json_archive)
     else:
         atomic_write(json_archive, json.dumps(entries, ensure_ascii=False, indent=2) + "\n")
 
-    if CSV_FILE.exists():
-        shutil.copy2(CSV_FILE, csv_archive)
-    else:
-        atomic_write(csv_archive, csv_content(entries))
-
-    return str(csv_archive.relative_to(ROOT))
+    return str(json_archive.relative_to(ROOT))
 
 
 class AppHandler(BaseHTTPRequestHandler):
@@ -230,8 +183,8 @@ class AppHandler(BaseHTTPRequestHandler):
                 HTTPStatus.SERVICE_UNAVAILABLE,
                 {
                     "error": (
-                        "The Excel backup is locked. Close current-session.csv in Excel "
-                        "and make one more entry or undo to retry. The JSON recovery copy is safe."
+                        "The JSON backup could not be written. Check that data/records.json "
+                        "is writable, then make one more entry or undo to retry."
                     )
                 },
             )
@@ -243,7 +196,7 @@ class AppHandler(BaseHTTPRequestHandler):
         response: dict[str, object] = {
             "ok": True,
             "count": len(entries),
-            "backupFile": str(CSV_FILE.relative_to(ROOT)),
+            "backupFile": str(RECORDS_FILE.relative_to(ROOT)),
         }
         if archived_file:
             response["archivedFile"] = archived_file
@@ -263,7 +216,7 @@ class AppHandler(BaseHTTPRequestHandler):
             {
                 "entries": entries,
                 "initialized": initialized,
-                "backupFile": str(CSV_FILE.relative_to(ROOT)),
+                "backupFile": str(RECORDS_FILE.relative_to(ROOT)),
             },
         )
 
@@ -295,7 +248,7 @@ def main() -> None:
     url = f"http://{HOST}:{PORT}"
     print("LYMEC Gender Watch")
     print(f"App:    {url}")
-    print(f"Backup: {CSV_FILE}")
+    print(f"Backup: {RECORDS_FILE}")
     print("Close this window or press Ctrl+C to stop the app.")
 
     if not args.no_browser:
