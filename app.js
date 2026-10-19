@@ -1,4 +1,5 @@
-const STORAGE_KEY = "lymec-gender-watch-v2";
+const STORAGE_KEY = "lymec-gender-watch-v3";
+const LEGACY_STORAGE_KEYS = ["lymec-gender-watch-v1", "lymec-gender-watch-v2"];
 const THEME_KEY = "lymec-gender-watch-theme";
 const MAX_VISIBLE_ENTRIES = 8;
 
@@ -33,10 +34,20 @@ const elements = {
   backupStatusText: document.querySelector("#backupStatusText"),
 };
 
+clearLegacyEntries();
+
 let entries = loadEntries();
 let toastTimer;
 let serverAvailable = false;
 let backupQueue = Promise.resolve();
+
+function clearLegacyEntries() {
+  try {
+    LEGACY_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+  } catch (error) {
+    console.error("Could not clear legacy browser storage:", error);
+  }
+}
 
 function loadEntries() {
   try {
@@ -88,14 +99,10 @@ async function initializeBackup() {
 
     serverAvailable = true;
     if (payload.initialized) {
-      if (entries.length > payload.entries.length) {
-        await syncBackup("restore");
-      } else {
-        entries = payload.entries;
-        saveEntries();
-        render();
-        setBackupStatus("saved", "Excel backup active - all records saved");
-      }
+      entries = payload.entries;
+      saveEntries();
+      render();
+      setBackupStatus("saved", "Excel backup active - all records saved");
     } else if (entries.length > 0) {
       await syncBackup("restore");
     } else {

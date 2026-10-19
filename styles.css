@@ -680,6 +680,10 @@ button:disabled {
   text-align: center;
 }
 
+.empty-state[hidden] {
+  display: none;
+}
+
 .empty-state svg {
   width: 42px;
   margin-bottom: 9px;
