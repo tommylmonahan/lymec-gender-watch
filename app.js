@@ -11,10 +11,14 @@ const elements = {
   manFirstTime: document.querySelector("#manFirstTime"),
   womanCount: document.querySelector("#womanCount"),
   womanFirstTime: document.querySelector("#womanFirstTime"),
+  nonBinaryCount: document.querySelector("#nonBinaryCount"),
+  nonBinaryFirstTime: document.querySelector("#nonBinaryFirstTime"),
   manPercent: document.querySelector("#manPercent"),
   womanPercent: document.querySelector("#womanPercent"),
+  nonBinaryPercent: document.querySelector("#nonBinaryPercent"),
   manBar: document.querySelector("#manBar"),
   womanBar: document.querySelector("#womanBar"),
+  nonBinaryBar: document.querySelector("#nonBinaryBar"),
   historyList: document.querySelector("#historyList"),
   emptyState: document.querySelector("#emptyState"),
   undoButton: document.querySelector("#undoButton"),
@@ -40,7 +44,7 @@ function loadEntries() {
     return stored.filter(
       (entry) =>
         entry &&
-        (entry.gender === "Man" || entry.gender === "Woman") &&
+        (entry.gender === "Man" || entry.gender === "Woman" || entry.gender === "Non-binary") &&
         typeof entry.firstTime === "boolean" &&
         typeof entry.timestamp === "string",
     );
@@ -127,6 +131,22 @@ function count(gender, firstTimeOnly = false) {
   ).length;
 }
 
+function calculatePercentages(counts, total) {
+  if (!total) return counts.map(() => 0);
+
+  const exact = counts.map((value) => (value / total) * 100);
+  const percentages = exact.map(Math.floor);
+  let remainder = 100 - percentages.reduce((sum, value) => sum + value, 0);
+  const priority = exact
+    .map((value, index) => ({ index, fraction: value - Math.floor(value) }))
+    .sort((a, b) => b.fraction - a.fraction);
+
+  for (let index = 0; index < remainder; index += 1) {
+    percentages[priority[index].index] += 1;
+  }
+  return percentages;
+}
+
 function formatTime(timestamp) {
   return new Intl.DateTimeFormat(undefined, {
     hour: "2-digit",
@@ -138,11 +158,15 @@ function render() {
   const total = entries.length;
   const men = count("Man");
   const women = count("Woman");
+  const nonBinary = count("Non-binary");
   const firstTimers = entries.filter((entry) => entry.firstTime).length;
   const menFirstTime = count("Man", true);
   const womenFirstTime = count("Woman", true);
-  const menShare = total ? Math.round((men / total) * 100) : 0;
-  const womenShare = total ? 100 - menShare : 0;
+  const nonBinaryFirstTime = count("Non-binary", true);
+  const [menShare, womenShare, nonBinaryShare] = calculatePercentages(
+    [men, women, nonBinary],
+    total,
+  );
 
   elements.headerTotal.textContent = total;
   elements.totalCount.textContent = total;
@@ -151,10 +175,14 @@ function render() {
   elements.manFirstTime.textContent = `${menFirstTime} first-time`;
   elements.womanCount.textContent = women;
   elements.womanFirstTime.textContent = `${womenFirstTime} first-time`;
+  elements.nonBinaryCount.textContent = nonBinary;
+  elements.nonBinaryFirstTime.textContent = `${nonBinaryFirstTime} first-time`;
   elements.manPercent.textContent = `${menShare}%`;
   elements.womanPercent.textContent = `${womenShare}%`;
+  elements.nonBinaryPercent.textContent = `${nonBinaryShare}%`;
   elements.manBar.style.width = `${menShare}%`;
   elements.womanBar.style.width = `${womenShare}%`;
+  elements.nonBinaryBar.style.width = `${nonBinaryShare}%`;
 
   const hasEntries = total > 0;
   elements.undoButton.disabled = !hasEntries;
@@ -304,6 +332,7 @@ document.addEventListener("keydown", (event) => {
 
   if (event.key.toLowerCase() === "m") recordEntry("Man");
   if (event.key.toLowerCase() === "w") recordEntry("Woman");
+  if (event.key.toLowerCase() === "n") recordEntry("Non-binary");
   if (event.key.toLowerCase() === "f") {
     elements.firstTime.checked = !elements.firstTime.checked;
     showToast(`First-time ${elements.firstTime.checked ? "on" : "off"}`);

@@ -20,8 +20,8 @@
           <span class="tool-name">Gender Watch</span>
         </div>
         <div class="congress-label">
-          <p class="eyebrow">European Liberal Youth</p>
-          <h1>Congress Floor Tracker</h1>
+          <p class="eyebrow">Congress participation</p>
+          <h1>LYMEC Gender Watch</h1>
         </div>
         <button class="icon-button" id="themeButton" type="button" aria-label="Use dark theme" title="Change theme">
           <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true">
@@ -85,9 +85,23 @@
             </span>
             <span class="key-hint" aria-hidden="true">W</span>
           </button>
+
+          <button class="record-button record-nonbinary" type="button" data-gender="Non-binary">
+            <span class="record-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32">
+                <circle cx="16" cy="9" r="5"></circle>
+                <path d="M7.5 27v-5.5A7.5 7.5 0 0 1 15 14h2a7.5 7.5 0 0 1 7.5 7.5V27M11 27v-5M21 27v-5"></path>
+              </svg>
+            </span>
+            <span>
+              <strong>Non-binary</strong>
+              <small>Record one speaker</small>
+            </span>
+            <span class="key-hint" aria-hidden="true">N</span>
+          </button>
         </div>
 
-        <p class="keyboard-note">Keyboard shortcuts: <kbd>M</kbd> man · <kbd>W</kbd> woman · <kbd>F</kbd> first-time</p>
+        <p class="keyboard-note">Keyboard shortcuts: <kbd>M</kbd> man · <kbd>W</kbd> woman · <kbd>N</kbd> non-binary · <kbd>F</kbd> first-time</p>
       </section>
 
       <section class="stats-panel" aria-labelledby="stats-heading">
@@ -118,16 +132,23 @@
             <strong id="womanCount">0</strong>
             <span id="womanFirstTime">0 first-time</span>
           </article>
+          <article class="stat-card">
+            <div class="stat-card-label"><span class="dot dot-nonbinary"></span>Non-binary</div>
+            <strong id="nonBinaryCount">0</strong>
+            <span id="nonBinaryFirstTime">0 first-time</span>
+          </article>
         </div>
 
         <div class="balance-card">
           <div class="balance-labels">
             <span><strong id="manPercent">0%</strong> men</span>
             <span><strong id="womanPercent">0%</strong> women</span>
+            <span><strong id="nonBinaryPercent">0%</strong> non-binary</span>
           </div>
           <div class="balance-bar" aria-label="Gender balance">
             <span class="balance-man" id="manBar"></span>
             <span class="balance-woman" id="womanBar"></span>
+            <span class="balance-nonbinary" id="nonBinaryBar"></span>
           </div>
         </div>
       </section>

@@ -14,6 +14,9 @@
   --coral: #c90070;
   --coral-bright: #eb0080;
   --coral-soft: #fde5f2;
+  --purple: #6f55b8;
+  --purple-bright: #8065c9;
+  --purple-soft: #eeeafb;
   --danger: #bd2452;
   --shadow: 0 18px 48px rgba(30, 50, 95, 0.08);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -35,6 +38,9 @@
   --coral: #ff66b5;
   --coral-bright: #eb0080;
   --coral-soft: #52223f;
+  --purple: #c4b4ff;
+  --purple-bright: #967be0;
+  --purple-soft: #382f5b;
   --danger: #ff8bad;
   --shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
 }
@@ -310,7 +316,7 @@ input:focus-visible + .custom-checkbox {
 
 .gender-actions {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 }
 
@@ -348,6 +354,12 @@ input:focus-visible + .custom-checkbox {
   background: var(--coral-soft);
   color: var(--coral);
   border-color: color-mix(in srgb, var(--coral-bright) 20%, transparent);
+}
+
+.record-nonbinary {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border-color: color-mix(in srgb, var(--purple-bright) 22%, transparent);
 }
 
 .record-icon {
@@ -443,7 +455,7 @@ button:disabled {
 
 .stat-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr 1fr;
+  grid-template-columns: 1.2fr repeat(3, 1fr);
   gap: 12px;
   margin-top: 20px;
 }
@@ -496,6 +508,10 @@ button:disabled {
   background: var(--coral-bright);
 }
 
+.dot-nonbinary {
+  background: var(--purple-bright);
+}
+
 .balance-card {
   margin-top: 17px;
 }
@@ -531,6 +547,10 @@ button:disabled {
 
 .balance-woman {
   background: var(--coral-bright);
+}
+
+.balance-nonbinary {
+  background: var(--purple-bright);
 }
 
 .history-panel {
