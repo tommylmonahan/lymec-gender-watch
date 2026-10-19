@@ -15,6 +15,7 @@ Keep the console window open while using the tracker. Close it, or press `Ctrl+C
 
 - One-click entries for men, women, and non-binary delegates
 - Optional first-time delegate marker
+- Optional per-record comment
 - Live totals, first-time totals, and gender balance
 - Recent-entry log and one-click undo
 - CSV export
@@ -36,7 +37,7 @@ The server listens only on `127.0.0.1`, so it is accessible only from this compu
 
 ## Notes
 
-- The first-time checkbox stays in its chosen state so consecutive first-time interventions can be logged quickly.
+- The first-time checkbox and comment field clear after each recorded intervention.
 - Resetting creates timestamped CSV and JSON archives before starting a blank session.
 - Avoid keeping `current-session.csv` open in Excel while recording. Excel may lock the file; if that happens, the app displays a warning and retains the records in the browser and JSON recovery file.
 - Opening `index.html` directly still works, but runs in browser-only mode without the automatic disk backup.

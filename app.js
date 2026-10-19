@@ -4,6 +4,7 @@ const MAX_VISIBLE_ENTRIES = 8;
 
 const elements = {
   firstTime: document.querySelector("#firstTimeCheckbox"),
+  comment: document.querySelector("#commentInput"),
   headerTotal: document.querySelector("#headerTotal"),
   totalCount: document.querySelector("#totalCount"),
   totalFirstTime: document.querySelector("#totalFirstTime"),
@@ -41,13 +42,19 @@ function loadEntries() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!Array.isArray(stored)) return [];
-    return stored.filter(
-      (entry) =>
-        entry &&
-        (entry.gender === "Man" || entry.gender === "Woman" || entry.gender === "Non-binary") &&
-        typeof entry.firstTime === "boolean" &&
-        typeof entry.timestamp === "string",
-    );
+    return stored
+      .filter(
+        (entry) =>
+          entry &&
+          (entry.gender === "Man" || entry.gender === "Woman" || entry.gender === "Non-binary") &&
+          typeof entry.firstTime === "boolean" &&
+          typeof entry.timestamp === "string" &&
+          (entry.comment === undefined || typeof entry.comment === "string"),
+      )
+      .map((entry) => ({
+        ...entry,
+        comment: typeof entry.comment === "string" ? entry.comment.slice(0, 160) : "",
+      }));
   } catch {
     return [];
   }
@@ -219,6 +226,14 @@ function createHistoryItem(entry, number) {
     person.append(badge);
   }
 
+  if (entry.comment) {
+    const comment = document.createElement("span");
+    comment.className = "history-comment";
+    comment.textContent = entry.comment;
+    comment.title = entry.comment;
+    person.append(comment);
+  }
+
   const time = document.createElement("time");
   time.className = "history-time";
   time.dateTime = entry.timestamp;
@@ -230,12 +245,16 @@ function createHistoryItem(entry, number) {
 
 function recordEntry(gender) {
   const isFirstTime = elements.firstTime.checked;
+  const comment = elements.comment.value.trim();
   entries.push({
     id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`,
     gender,
     firstTime: isFirstTime,
+    comment,
     timestamp: new Date().toISOString(),
   });
+  elements.firstTime.checked = false;
+  elements.comment.value = "";
   saveEntries();
   render();
   syncBackup("record");
@@ -254,6 +273,7 @@ function undoLast() {
 function resetSession() {
   entries = [];
   elements.firstTime.checked = false;
+  elements.comment.value = "";
   saveEntries();
   render();
   syncBackup("reset");
@@ -261,13 +281,14 @@ function resetSession() {
 }
 
 function exportCsv() {
-  const header = ["Entry", "Gender", "First-time delegate", "Date", "Time"];
+  const header = ["Entry", "Gender", "First-time delegate", "Comment", "Date", "Time"];
   const rows = entries.map((entry, index) => {
     const date = new Date(entry.timestamp);
     return [
       index + 1,
       entry.gender,
       entry.firstTime ? "Yes" : "No",
+      entry.comment || "",
       date.toLocaleDateString(),
       date.toLocaleTimeString(),
     ];

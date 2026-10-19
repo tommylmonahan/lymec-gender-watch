@@ -52,6 +52,7 @@ def validate_entries(value: object) -> list[dict[str, object]]:
         entry_id = entry.get("id")
         gender = entry.get("gender")
         first_time = entry.get("firstTime")
+        comment = entry.get("comment", "")
         timestamp = entry.get("timestamp")
 
         if not isinstance(entry_id, str) or not entry_id or len(entry_id) > 200:
@@ -60,6 +61,8 @@ def validate_entries(value: object) -> list[dict[str, object]]:
             raise ValueError(f"Entry {index} has an invalid gender.")
         if not isinstance(first_time, bool):
             raise ValueError(f"Entry {index} has an invalid first-time value.")
+        if not isinstance(comment, str) or len(comment) > 160:
+            raise ValueError(f"Entry {index} has an invalid comment.")
         if not isinstance(timestamp, str) or len(timestamp) > 50:
             raise ValueError(f"Entry {index} has an invalid timestamp.")
 
@@ -73,6 +76,7 @@ def validate_entries(value: object) -> list[dict[str, object]]:
                 "id": entry_id,
                 "gender": gender,
                 "firstTime": first_time,
+                "comment": comment.strip(),
                 "timestamp": timestamp,
             }
         )
@@ -108,6 +112,7 @@ def csv_content(entries: list[dict[str, object]]) -> str:
             "Entry",
             "Gender",
             "First-time delegate",
+            "Comment",
             "Recorded at",
             "Date",
             "Time",
@@ -123,6 +128,7 @@ def csv_content(entries: list[dict[str, object]]) -> str:
                 index,
                 entry["gender"],
                 "Yes" if entry["firstTime"] else "No",
+                entry.get("comment", ""),
                 local_time.isoformat(timespec="seconds"),
                 local_time.strftime("%Y-%m-%d"),
                 local_time.strftime("%H:%M:%S"),

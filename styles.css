@@ -249,12 +249,23 @@ input:focus-visible + .custom-checkbox {
   font-weight: 750;
 }
 
+.entry-options {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.85fr) minmax(340px, 1.4fr);
+  gap: 14px;
+  margin: 26px 0 14px;
+}
+
 .first-time-toggle {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: fit-content;
-  margin: 26px 0 14px;
+  width: 100%;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface-strong);
   cursor: pointer;
   user-select: none;
 }
@@ -312,6 +323,55 @@ input:focus-visible + .custom-checkbox {
   margin-top: 2px;
   color: var(--muted);
   font-size: 0.78rem;
+}
+
+.comment-field {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 10px 11px 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface-strong);
+}
+
+.comment-field strong,
+.comment-field small {
+  display: block;
+}
+
+.comment-field strong {
+  font-size: 0.94rem;
+}
+
+.comment-field small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.comment-field input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  outline: none;
+  background: var(--page);
+  color: var(--ink);
+  font-size: 0.84rem;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.comment-field input::placeholder {
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+.comment-field input:focus {
+  border-color: var(--blue-bright);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-bright) 16%, transparent);
 }
 
 .gender-actions {
@@ -589,6 +649,15 @@ button:disabled {
   font-size: 0.88rem;
 }
 
+.history-comment {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.74rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .first-time-badge {
   padding: 3px 7px;
   border-radius: 999px;
@@ -817,6 +886,10 @@ dialog p {
   }
 
   .gender-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-options {
     grid-template-columns: 1fr;
   }
 

@@ -46,16 +46,32 @@
           <p class="total-pill"><span id="headerTotal">0</span> recorded</p>
         </div>
 
-        <label class="first-time-toggle">
-          <input type="checkbox" id="firstTimeCheckbox" />
-          <span class="custom-checkbox" aria-hidden="true">
-            <svg viewBox="0 0 20 20"><path d="m5 10 3.1 3.1L15 6.5"></path></svg>
-          </span>
-          <span>
-            <strong>First-time delegate</strong>
-            <small>Apply this to the next entry</small>
-          </span>
-        </label>
+        <div class="entry-options">
+          <label class="first-time-toggle">
+            <input type="checkbox" id="firstTimeCheckbox" />
+            <span class="custom-checkbox" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="m5 10 3.1 3.1L15 6.5"></path></svg>
+            </span>
+            <span>
+              <strong>First-time delegate</strong>
+              <small>Apply this to the next entry</small>
+            </span>
+          </label>
+
+          <label class="comment-field">
+            <span>
+              <strong>Comment</strong>
+              <small>Optional · applies to the next entry</small>
+            </span>
+            <input
+              type="text"
+              id="commentInput"
+              maxlength="160"
+              placeholder="Add a short note"
+              autocomplete="off"
+            />
+          </label>
+        </div>
 
         <div class="gender-actions">
           <button class="record-button record-man" type="button" data-gender="Man">
